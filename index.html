@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- set styles on the top -->
+    <style>
+        .chart-container {
+            max-width: 1050px;
+            /* border: 2px solid red; */
+            margin: 0 auto;
+            /* auto centers the div */
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        svg {
+            /* border: 2px solid purple; */
+            overflow: visible;
+        }
+
+        h1 {
+            margin: 0 auto;
+            margin-left: 30px
+        }
+
+        .x .tick line {
+            stroke: rgba(0, 0, 0, .2);
+        }
+
+        .y .tick line {
+            stroke: rgba(0, 0, 0, .2);
+        }
+
+        .x .domain {
+            display: none;
+        }
+
+        .y .domain {
+            display: none;
+        }
+
+        .y .tick text {
+            font-size: 14px;
+            fill: #333;
+
+        }
+
+        .x .tick text {
+            font-size: 14px;
+            fill: #333;
+        }
+
+        .label {
+            font-size: 25px;
+            font-weight: 200;
+        }
+
+        .axis-label {
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .source {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .block {
+            margin-right: 3px;
+            margin-top: -2px;
+            width: 12px;
+            height: 12px;
+        }
+
+        .legend {
+            margin-left: 15px;
+            margin-top: -13px;
+            font-size: 13px;
+            font-weight: 200;
+            line-height: 1.2;
+        }
+
+        .legend-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            margin: 3px 0 5px 30px;
+        }
+
+        .elements {
+            margin: 3px 8px 3px 0;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .filler {
+            margin-top: 300px;
+            height: 50rem;
+            text-align: center;
+        }
+
+        .filler h2 {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 54px;
+        }
+
+
+        .filler p {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 24px;
+            text-align: center;
+            margin: 20px auto;
+            line-height: 1.2;
+            max-width: 600px
+            
+        }
+
+        #scrolly-overlay .scrolly {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 24px;
+            max-width: 60rem;
+            margin: 3rem auto;
+            background-color: #f4f4f4;
+            padding: 1rem;
+            position: relative;
+
+        }
+
+        #scrolly-overlay .scrolly article {
+            padding: 0;
+            max-width: 30rem;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        #scrolly-overlay .scrolly article .step {
+            min-height: 101.9vh;
+            margin-bottom: 1rem;
+            margin-right: 11rem;
+        }
+
+        #scrolly-overlay .scrolly article .step:last-of-type {
+            margin-bottom: 0;
+        }
+
+        #scrolly-overlay .scrolly article .step.is-active p {
+            text-decoration: underline;
+        }
+
+        #scrolly-overlay .scrolly article .step p {
+            margin: 0;
+            padding: 1rem;
+            font-size: 35px;
+            text-align: center;
+            font-weight: 400;
+            /*background-color: #5b5b5b;*/
+            transition: background-color 250ms ease-in-out;
+            color: #000000;
+        }
+
+        #scrolly-overlay .scrolly figure.sticky {
+            /* this is the key style for the chart */
+            position: sticky;
+            width: 100%;
+            height: 100vh;
+            /* vh is the unit that divdes the viewport in units of 1/100 */
+            /* height is 50 vh = half the height of the viewport */
+            background: #96969600;
+            margin: 0;
+            top: 10vh;
+            /* this is how high it should be from top */
+
+            left: 0;
+        }
+
+        #scrolly-overlay .scrolly figure.sticky .bar-outer {
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            transform: translateY(-50%);
+            width: 90%;
+            height: 4rem;
+            background-color: #fff;
+        }
+
+        #scrolly-overlay .scrolly figure.sticky .bar-inner {
+            width: 10%;
+            height: 100%;
+            transition: width 1s ease-in-out;
+            background-color: #daa520;
+        }
+
+        .spacer {
+            height: 1500px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <section class='filler'>
+
+        <h2><em>Obamacare has been holding up for a decade.</em></h2>
+
+        <p>
+            Scroll down to see how the shares of healthcare choices have changed across incomes from 2009 to 2020.
+        </p>
+
+    </section>
+
+    <section id='scrolly-overlay'>
+
+        <div class='scrolly'>
+
+            <!--  sticky graphic   -->
+            <figure class='sticky'>
+                <!-- put your chart stuff here -->
+                <div class="chart-container">
+                    <div class = "head-container">
+                        <h1 class="headline">
+                            Healthcare by income
+                        </h1>
+                        <div class="legend-container">
+                            <div class="elements medicaremedicaid">
+                                <div class="block" style="background-color: rgb(253, 216, 53);"></div>
+                                <div class="legend">Medicare and Medicaid</div>
+                            </div>
+                            <div class="elements direct-purchase">
+                                <div class="block" style="background-color: rgb(77, 208, 225);"></div>
+                                <div class="legend">Direct Purchase</div>
+                            </div>
+                            <div class="elements subsidized-exchange">
+                                <div class="block" style="background-color: rgb(240, 98, 146);"></div>
+                                <div class="legend">Subsidized Exchange</div>
+                            </div>
+                            <div class="elements chip">
+                                <div class="block" style="background-color: rgb(92, 107, 192);"></div>
+                                <div class="legend">CHIP</div></div>
+                            <div class="elements military">
+                                <div class="block" style="background-color: rgb(144, 164, 174);"></div>
+                                <div class="legend">Military</div></div>
+                            <div class="elements other">
+                                <div class="block" style="background-color: rgb(224, 224, 224);"></div>
+                                <div class="legend">Other</div>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <svg class= "area-chart" width="1050px" height="575px">
+                    </svg>
+                    <p class="source">Source: Current Population Survey, analysis by Matt Bruenig</p>
+            
+                </div>
+            </figure>
+
+            <!--  step text   -->
+            <article>
+                <div class='step' data-year=2009 data-index='0'>
+                    <p><b>in 2009</b></p>
+                </div>
+                <div class='step' data-year=2020 data-index='1'>
+                    <p><b>in 2020</b></p>
+                </div>
+            </article>
+
+        </div>
+
+    </section>
+
+    <section class='filler'>
+        <h2>Voila. A new safety net.</h2>
+ 
+        <div class="spacer"></div>
+        <p><em>by Austin Gana Tolentino</em></p>
+        </br>
+        </br>
+    </section>
+
+
+
+</body>
+
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://unpkg.com/enter-view@1.0.0/enter-view.min.js"></script>
+<!-- we're using d3 version 6 (the latest version) for all out work -->
+
+<script>
+
+    let width = 800;
+    let height = 500;
+
+    let svg = d3.select("body")
+        .select("svg")
+
+    d3.csv("healthcare-disposable-inc.csv").then(function (data) {
+
+
+        let margin = { top: 10, right: 10, bottom: 10, left: 30 };
+
+        let sel_cols = [
+            "Medicaid",
+            "Medicare",
+            "Medicare+Medicaid",
+            "Employer",
+            "Uninsured",
+            "Direct Purchase",
+            "Subsidized Exchange",
+            "CHIP",
+            "Military",
+            "Other"] //order here will be the order of stack
+
+        let sel_colors = [
+            "#f44336", // "Medicaid",
+            "#FF9800", // "Medicare",
+            "#FDD835", // "Medicare+Medicaid",
+            "#FFF8E1", // "Employer",
+            "#26A69A", // "Uninsured",
+            "#4DD0E1", // "Direct Purchase",
+            "#F06292", // "Subsidized Exchange",
+            "#5C6BC0", // "CHIP",
+            "#90A4AE", // "Military",
+            "#E0E0E0"  // "Other"
+        ]
+
+        let year_state = 2009;
+
+        let d2009 = data.filter(d => d.year == 2009)
+        let d2020 = data.filter(d => d.year == 2020)
+        
+        
+        let series2009 = d3.stack().keys(sel_cols)(d2009)
+        let series2020 = d3.stack().keys(sel_cols)(d2020)
+        
+
+        let color = d3.scaleOrdinal()
+            .domain(sel_cols)
+            .range(sel_colors)
+
+        let x = d3.scaleLinear()
+            .domain([0, 100])
+            .range([margin.left, width])
+
+        let y = d3.scaleLinear()
+            .domain([0,1])
+            .range([height - margin.bottom, margin.top])
+
+        let area = d3.area()
+            .x(d => x(d.data.Percentile))
+            .y0(d => y(d[0]))
+            .y1(d => y(d[1]))
+
+    // axes
+        let xAxisSettings = d3.axisBottom(x)
+            .tickSize(6)
+            .tickPadding(6)
+            .tickValues([5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95])
+            .tickFormat(d3.format(".0f"))
+
+        let xAxis = svg.append("g")
+            .attr("class", "x axis")
+            .call(xAxisSettings)
+            .call(g => g.selectAll(".domain").remove())
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+
+        let yAxisSettings = d3.axisLeft(y)
+            .tickValues([.2, .4, .6, .8])
+            .tickSize(6)
+            .tickPadding(4)
+            .tickFormat(d3.format(".0%"))
+
+        let yAxis = svg
+            .append("g")
+            .attr("class", "y axis")
+            .call(yAxisSettings)
+            .call(g => g.selectAll(".domain").remove())
+            .attr("transform", `translate(${margin.left},0)`)
+
+    // areas
+        let areas = svg.append("g")
+
+        let hed = d3.select(".headline")
+
+        areas
+            .selectAll("path")
+            .data(series2009, d => d.key)
+            .join("path")
+            .attr("class", d => d.key)
+            .attr("fill", d => color(d.key))
+            .attr("d", area)
+            .append("title")
+
+    // x-axis labels
+        areas
+            .append("text")
+            .attr("class", "axis-label")
+            .attr("x", width / 2)
+            .attr("y", height + 40)
+            .text("income percentile")
+            .attr("text-anchor", "middle")
+        
+        areas
+            .append("text")
+            .attr("class", "axis-label")
+            .attr("x", width - 2)
+            .attr("y", height + 40)
+            .text("higher income")
+            .attr("text-anchor", "end")
+
+        areas
+            .append("text")
+            .attr("class", "axis-label")
+            .attr("x", 30)
+            .attr("y", height + 40)
+            .text("lower income")
+            .attr("text-anchor", "start")
+    
+    // labels
+        let key_employer = areas
+            .append("text")
+            .attr("class", "label")
+            .attr("x", 675)
+            .attr("y", 275)
+            .text("Employer")
+        
+        let key_medicaid = areas
+            .append("text")
+            .attr("class", "label")
+            .attr("x", 75)
+            .attr("y", 450)
+            .text("Medicaid")
+            .style("fill", "white")
+
+        let key_medicare = areas
+            .append("text")
+            .attr("class", "label")
+            .attr("x", 80)
+            .attr("y", 325)
+            .text("Medicare")
+
+        let key_uninsured = areas
+            .append("text")
+            .attr("class", "label")
+            .attr("x", 80)
+            .attr("y", 130)
+            .text("Uninsured")
+            .style("fill", "white")
+
+        let key_direct = areas
+            .append("text")
+            .attr("class", "label")
+            .attr("x", 725)
+            .attr("y", 50)
+            .text("Direct Purchase")
+            .style("font-size", "12px")
+
+        const container = d3.select('#scrolly-overlay');
+        const stepSel = container.selectAll('.step'); //final all the step nodes
+        
+
+        function updateChart(index) {
+            const sel = container.select(`[data-index='${index}']`);
+            const year = sel.attr('data-year');
+            let chart = container.select('.area-chart').append("g")
+            chart
+                .selectAll("path")
+                .data((d3.stack().keys(sel_cols)(data.filter(d => d.year == year))), d => d.key)
+                .join("path")
+                .transition()
+                .ease(d3.easeSinInOut)
+                .duration(500)
+                .attr("class", d => d.key)
+                .attr("fill", d => color(d.key))
+                .attr("d", area);
+                
+            let key_employer = chart
+                .append("text")
+                .attr("class", "label")
+                .attr("x", 675)
+                .attr("y", 275)
+                .text("Employer")
+            
+            let key_medicaid = chart
+                .append("text")
+                .attr("class", "label")
+                .attr("x", 75)
+                .attr("y", 450)
+                .text("Medicaid")
+                .style("fill", "white")
+
+            let key_medicare = chart
+                .append("text")
+                .attr("class", "label")
+                .attr("x", 80)
+                .attr("y", 325)
+                .text("Medicare")
+
+            let key_uninsured = chart
+                .append("text")
+                .attr("class", "label")
+                .attr("x", 80)
+                .attr("y", 130)
+                .text("Uninsured")
+                .style("fill", "white")
+            if (year == 2020) {
+                key_employer
+                .transition()
+                .ease(d3.easeSin)
+                .duration(500)
+                .attr("x", 650)
+                .attr("y", 255)
+                
+                key_medicaid
+                    .transition()
+                    .ease(d3.easeSin)
+                    .duration(500)
+                    .attr("x", 50)
+                    .attr("y", 415)
+
+                key_medicare
+                    .transition()
+                    .ease(d3.easeSin)
+                    .duration(500)
+                    .attr("x", 55)
+                    .attr("y", 290)
+
+                key_uninsured
+                    .transition()
+                    .ease(d3.easeSin)
+                    .duration(500)
+                    .attr("x", 145)
+                    .attr("y", 100)
+            } else if (year == 2009) {
+                key_employer
+                    .transition()
+                    .ease(d3.easeSin)
+                    .duration(500)
+                    .attr("x", 675)
+                    .attr("y", 275)
+                
+                key_medicaid
+                    .transition()
+                    .ease(d3.easeSin)
+                    .duration(500)
+                    .attr("x", 75)
+                    .attr("y", 450)
+
+                key_medicare
+                    .transition()
+                    .ease(d3.easeSin)
+                    .duration(500)
+                    .attr("x", 80)
+                    .attr("y", 325)
+
+                key_uninsured
+                    .transition()
+                    .ease(d3.easeSin)
+                    .duration(500)
+                    .attr("x", 80)
+                    .attr("y", 130)
+            }
+            console.log({year});
+            stepSel.classed('is-active', (d, i) => i === index);
+
+        }
+
+
+        function init() {
+
+            enterView({ //our main view function
+                selector: stepSel.nodes(),
+                offset: 0.08, //when the slide is 50% away then trigger your chart
+                enter: el => { //what's supposed to happen when the slide enters?
+                    const index = +d3.select(el).attr('data-index'); //extract the data-index attribute. this can be anything: a filter, a date, whatever.
+                    updateChart(index);
+                },
+                exit: el => { //what's supposed to happen when the slide exits?
+                    let index = +d3.select(el).attr('data-index');
+                    index = Math.max(0, index - 1);
+                    updateChart(index);
+                }
+            });
+
+        }
+
+        init();
+    //     //https://github.com/d3/d3-shape#stacks
+
+    //     // https://github.com/d3/d3-scale#ordinal-scales
+
+    //     //https://github.com/d3/d3-shape#areas
+      
+    })
+    
+    
+
+</script>
